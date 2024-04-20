@@ -2,7 +2,7 @@ from openai import OpenAI
 from typing_extensions import override
 from openai import AssistantEventHandler
 
-client = OpenAI(api_key="")
+client = OpenAI(api_key="sk-proj-e59KlHdBCEAK9PrZKluxT3BlbkFJVdHz1gDxkjbjvcMGOsVO")
 
 assistant = client.beta.assistants.create(
   name="Bloodwork Analysis",
@@ -31,7 +31,7 @@ thread = client.beta.threads.create(
     messages=[
     {
       "role": "user",
-        "content": "Give me a comprehensive view of how my health has changed between these blood reports.",
+        "content": "Give me a comprehensive view of how my health has changed between these blood reports. Don't yap.",
     }
   ]
 )
@@ -46,7 +46,7 @@ messages = list(client.beta.threads.messages.list(thread_id=thread.id, run_id=ru
 
 while True:
     messages = list(client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id))
-    print(messages[-1].content)
+    print(messages[-1].role)
     message_content = messages[-1].content[0].text
     annotations = message_content.annotations
     citations = []
