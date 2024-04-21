@@ -25,15 +25,16 @@ assistant = client.beta.assistants.update(
   tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
 )
 
+prompt_for_patient = prompt_for_patient(patient_zero)
+prompt_for_patient += "give me a comprehensive view of my health based on the latest blood work report. Don't yap."
 thread = client.beta.threads.create(
     messages=[
     {
       "role": "user",
-        "content": "Give me a comprehensive view of how my health has changed between these blood reports. Don't yap.",
+      "content": prompt_for_patient,
     }
   ]
 )
-
 thread.tool_resources.file_search
 
 run = client.beta.threads.runs.create_and_poll(
@@ -53,28 +54,31 @@ while True:
             citations.append(f"[{index}] {cited_file.filename}")
 
     print(f"specific message: {message_content.value}")
-    if (loop == 1):
-      new_message = client.beta.threads.messages.create(
-          thread_id = thread.id,
-          role = "assistant",
-          content = message_content.value
-      )
-      new_message_2 = client.beta.threads.messages.create(
-          thread_id = thread.id,
-          role = "user",
-          content = "Is my WBC high? Just say yes or no."
-      )
-    elif (loop == 2):
-      new_message = client.beta.threads.messages.create(
-          thread_id = thread.id,
-          role = "assistant",
-          content = message_content.value
-      )
-      new_message_2 = client.beta.threads.messages.create(
-          thread_id = thread.id,
-          role = "user",
-          content = "Do I need to make lifestyle changes for this? Don't yap."
-      )
+    new_message = client.beta.threads.messages.create(
+        thread_id = thread.id,
+        role = "assistant",
+        content = message_content.value
+    )
+    new_message_2 = client.beta.threads.messages.create(
+        thread_id = thread.id,
+        role = "user",
+        content = "Give me a review of how my health has changes between the first and second report. Don't yap."
+    )
+    run = client.beta.threads.runs.create_and_poll(
+      thread_id=thread.id,
+      assistant_id=assistant.id,
+      instructions=""
+    )
+    new_message = client.beta.threads.messages.create(
+        thread_id = thread.id,
+        role = "assistant",
+        content = message_content.value
+    )
+    new_message_2 = client.beta.threads.messages.create(
+        thread_id = thread.id,
+        role = "user",
+        content = "Do I need to make lifestyle changes for this? Don't yap."
+    )
     
     run = client.beta.threads.runs.create_and_poll(
       thread_id=thread.id,
