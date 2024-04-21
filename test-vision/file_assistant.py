@@ -1,4 +1,5 @@
 from openai import OpenAI
+from patient_context import patient_zero, prompt_for_patient
 
 client = OpenAI(api_key="")
 
