@@ -2,7 +2,7 @@ from openai import OpenAI
 from typing_extensions import override
 from openai import AssistantEventHandler
 
-client = OpenAI(api_key="sk-proj-e59KlHdBCEAK9PrZKluxT3BlbkFJVdHz1gDxkjbjvcMGOsVO")
+client = OpenAI(api_key="")
 
 assistant = client.beta.assistants.create(
   name="Bloodwork Analysis",
