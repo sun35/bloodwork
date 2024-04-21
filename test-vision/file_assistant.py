@@ -30,7 +30,7 @@ thread = client.beta.threads.create(
     messages=[
     {
       "role": "user",
-      "content": "What is my latest WBC?",
+      "content": "Give me a comprehensive view of how my health has changed between these blood reports.",
     }
   ]
 )
