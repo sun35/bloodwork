@@ -8,7 +8,7 @@ import pandas as pd
 import openai
 from openai import OpenAI
 
-client = OpenAI(api_key="")
+client = OpenAI(api_key="sk-proj-wh7twY7WQ4XfnBTI7WYpT3BlbkFJgyYp2ePIVN3wI3xUJknU")
 
 df = pd.DataFrame({
   'first column': [1, 2, 3, 4],
@@ -21,18 +21,33 @@ st.set_page_config("Labwork AI", "🩸", layout="wide")
 st.title("Labwork AI  :drop_of_blood:")
 st.header("Your one-stop-shop for all things related to understanding blood work reports.")
 
+with st.form("my-form", clear_on_submit=True):
+  #file = st.file_uploader("FILE UPLOADER")
+  uploaded_files = st.file_uploader('Choose your .pdf file', type="pdf",  accept_multiple_files=True)
+  st.form_submit_button("Analyze lab work")
 
+def chat_bot():
+  if "messages" not in st.session_state:
+    st.session_state.messages = []
+  # Display chat messages from history on app rerun
+  for message in st.session_state.messages:
+      with st.chat_message(message["role"]):
+          st.markdown(message["content"])
 
+  # React to user input
+  if prompt := st.chat_input("What is up?"):
+      # Display user message in chat message container
+      st.chat_message("user").markdown(prompt)
+      # Add user message to chat history
+      st.session_state.messages.append({"role": "user", "content": prompt})
 
-uploaded_files = st.file_uploader('Choose your .pdf file', type="pdf",  accept_multiple_files=True)
-for uploaded_file in uploaded_files:
-    bytes_data = uploaded_file.read()
-    #st.write("filename:", uploaded_file.name)
-    #st.write(bytes_data)
-prompt = st.chat_input("Say something")
-if prompt:
-    st.write(f"User has sent the following prompt: {prompt}")
-    
+      response = f"Echo: {prompt}"
+      # Display assistant response in chat message container
+      with st.chat_message("assistant"):
+          st.markdown(response)
+      # Add assistant response to chat history
+      st.session_state.messages.append({"role": "assistant", "content": response})
+
 def extract_data(uploaded_files):
   assistant = client.beta.assistants.create(
   name="Bloodwork Analysis",
@@ -83,13 +98,16 @@ def extract_data(uploaded_files):
           cited_file = client.files.retrieve(file_citation.file_id)
           citations.append(f"[{index}] {cited_file.filename}")
   st.write(message_content.value)
-  print(message_content.value)
-  print("\n".join(citations))
-
-
-
-if uploaded_files:
-    #df = extract_data(uploaded_files)
+  return
+first_time = True
+if uploaded_files and first_time:
     with st.spinner("Analyzing blood work..."):
       df = extract_data(uploaded_files)
+      uploaded_files = None
+      first_time = False
+
+chat_bot()
+
+      
+
 
