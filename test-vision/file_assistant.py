@@ -1,6 +1,7 @@
 from openai import OpenAI
 from typing_extensions import override
 from openai import AssistantEventHandler
+from patient_context import patient_zero, prompt_for_patient
 
 client = OpenAI(api_key="")
 
