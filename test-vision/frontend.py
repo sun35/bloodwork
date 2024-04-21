@@ -8,7 +8,7 @@ import pandas as pd
 import openai
 from openai import OpenAI
 
-client = OpenAI(api_key="sk-proj-lcF78HCBY6LJkaF47oMoT3BlbkFJEzTuqHyMffkDPlxTxSN8")
+client = OpenAI(api_key="")
 
 df = pd.DataFrame({
   'first column': [1, 2, 3, 4],
