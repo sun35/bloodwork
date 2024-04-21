@@ -88,8 +88,8 @@ def extract_data(uploaded_files):
   )
 
   vector_store = client.beta.vector_stores.create(name="Blood Reports")
-  file_paths = ["blood.pdf"]
-  file_streams = [open(path, "rb") for path in file_paths]
+  file_paths = uploaded_files
+  file_streams = [(path) for path in file_paths]
 
   file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
     vector_store_id=vector_store.id, files=file_streams
